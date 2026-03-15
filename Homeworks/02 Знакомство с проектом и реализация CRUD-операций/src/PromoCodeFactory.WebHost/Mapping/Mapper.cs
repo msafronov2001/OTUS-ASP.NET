@@ -30,6 +30,17 @@ public static class Mapper
             role.Description);
     }
 
+    public static Role ToRole(RoleCreateRequest request)
+    {
+        return new Role
+        {
+            Id = Guid.NewGuid(),
+            Name = request.Name,
+            Description = request.Description
+        };
+    }
+
+
     public static Employee ToEmployee(EmployeeCreateRequest request, Role role)
     {
         return new Employee
