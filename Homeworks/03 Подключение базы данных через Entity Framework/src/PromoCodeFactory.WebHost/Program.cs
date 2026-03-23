@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using PromoCodeFactory.DataAccess;
 
 var builder = WebApplication.CreateBuilder();
