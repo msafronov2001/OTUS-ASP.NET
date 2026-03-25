@@ -9,4 +9,5 @@ public static class PreferencesMapper
     {
         return new PreferenceShortResponse(preference.Id, preference.Name);
     }
+
 }
