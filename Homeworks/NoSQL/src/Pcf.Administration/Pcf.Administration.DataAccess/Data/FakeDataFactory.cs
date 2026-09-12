@@ -15,6 +15,7 @@ namespace Pcf.Administration.DataAccess.Data
                 Email = "owner@somemail.ru",
                 FirstName = "Иван",
                 LastName = "Сергеев",
+                RoleId = Guid.Parse("53729686-a368-4eeb-8bfa-cc69b6050d02"),
                 Role = Roles.FirstOrDefault(x => x.Name == "Admin"),
                 AppliedPromocodesCount = 5
             },
@@ -24,6 +25,7 @@ namespace Pcf.Administration.DataAccess.Data
                 Email = "andreev@somemail.ru",
                 FirstName = "Петр",
                 LastName = "Андреев",
+                RoleId = Guid.Parse("b0ae7aac-5493-45cd-ad16-87426a5e7665"),
                 Role = Roles.FirstOrDefault(x => x.Name == "PartnerManager"),
                 AppliedPromocodesCount = 10
             },
