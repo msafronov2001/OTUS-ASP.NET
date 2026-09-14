@@ -1,15 +1,19 @@
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
-using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
-using Pcf.Administration.DataAccess;
-using Pcf.Administration.DataAccess.Repositories;
-using Pcf.Administration.DataAccess.Data;
 using Pcf.Administration.Core.Abstractions.Repositories;
+using Pcf.Administration.Core.Services.Implementations;
+using Pcf.Administration.Core.Services.Interfaces;
+using Pcf.Administration.DataAccess;
+using Pcf.Administration.DataAccess.Data;
+using Pcf.Administration.DataAccess.Repositories;
+using Pcf.Administration.WebHost.Consumers;
 using System;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace Pcf.Administration.WebHost
 {
@@ -30,6 +34,21 @@ namespace Pcf.Administration.WebHost
                 x.SuppressAsyncSuffixInActionNames = false);
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<IDbInitializer, EfDbInitializer>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<PromoCodeReceivedConsumer>();
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host(Configuration["RabbitMq:Host"], "/", h =>
+                    {
+                        h.Username(Configuration["RabbitMq:Username"]);
+                        h.Password(Configuration["RabbitMq:Password"]);
+                    });
+                    cfg.ReceiveEndpoint("administration-promo-code-received", e =>
+                        e.ConfigureConsumer<PromoCodeReceivedConsumer>(context));
+                });
+            });
             services.AddDbContext<DataContext>(x =>
             {
                 //x.UseSqlite("Filename=PromocodeFactoryAdministrationDb.sqlite");

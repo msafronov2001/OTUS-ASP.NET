@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Pcf.Administration.Core.Abstractions.Repositories;
+using Pcf.Administration.Core.Domain.Administration;
+using Pcf.Administration.Core.Services.Interfaces;
+using Pcf.Administration.Core.Services.Implementations;
+using Pcf.Administration.WebHost.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Pcf.Administration.Core.Abstractions.Repositories;
-using Pcf.Administration.Core.Domain.Administration;
-using Pcf.Administration.WebHost.Models;
 
 namespace Pcf.Administration.WebHost.Controllers
 {
@@ -18,11 +20,16 @@ namespace Pcf.Administration.WebHost.Controllers
         : ControllerBase
     {
         private readonly IRepository<Employee> _employeeRepository;
+        private readonly IEmployeeService _employeeService;
 
-        public EmployeesController(IRepository<Employee> employeeRepository)
+        public EmployeesController(
+            IRepository<Employee> employeeRepository,
+            IEmployeeService employeeService)
         {
             _employeeRepository = employeeRepository;
+            _employeeService = employeeService;
         }
+
 
         /// <summary>
         /// Получить данные всех сотрудников
@@ -83,15 +90,9 @@ namespace Pcf.Administration.WebHost.Controllers
 
         public async Task<IActionResult> UpdateAppliedPromocodesAsync(Guid id)
         {
-            var employee = await _employeeRepository.GetByIdAsync(id);
-
-            if (employee == null)
+            if (!await _employeeService.IncrementAppliedPromoCodesAsync(id))
                 return NotFound();
-
-            employee.AppliedPromocodesCount++;
-
-            await _employeeRepository.UpdateAsync(employee);
-
+           
             return Ok();
         }
     }

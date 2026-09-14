@@ -10,6 +10,7 @@
       <ProjectReference Include="..\Pcf.ReceivingFromPartner.Core\Pcf.ReceivingFromPartner.Core.csproj" />
       <ProjectReference Include="..\Pcf.ReceivingFromPartner.DataAccess\Pcf.ReceivingFromPartner.DataAccess.csproj" />
       <ProjectReference Include="..\Pcf.ReceivingFromPartner.Integration\Pcf.ReceivingFromPartner.Integration.csproj" />
+      <ProjectReference Include="..\..\Pcf.Contracts\Pcf.Contracts.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -19,6 +20,7 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.7" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
       <PackageReference Include="NSwag.AspNetCore" Version="14.1.0" />
+      <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.5" />
     </ItemGroup>
 
 </Project>

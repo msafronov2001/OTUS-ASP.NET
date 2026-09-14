@@ -12,6 +12,10 @@ using Pcf.GivingToCustomer.DataAccess.Data;
 using Pcf.GivingToCustomer.DataAccess;
 using Pcf.GivingToCustomer.DataAccess.Repositories;
 using Pcf.GivingToCustomer.Integration;
+using MassTransit;
+using Pcf.GivingToCustomer.WebHost.Consumers;
+using Pcf.GivingToCustomer.Core.Services.Interfaces;
+using Pcf.GivingToCustomer.Core.Services.Implementations;
 
 namespace Pcf.GivingToCustomer.WebHost
 {
@@ -33,6 +37,21 @@ namespace Pcf.GivingToCustomer.WebHost
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<INotificationGateway, NotificationGateway>();
             services.AddScoped<IDbInitializer, EfDbInitializer>();
+            services.AddScoped<IGivePromoCodeService, GivePromoCodeService>();
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<PromoCodeReceivedConsumer>();
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host(Configuration["RabbitMq:Host"], "/", h =>
+                    {
+                        h.Username(Configuration["RabbitMq:Username"]);
+                        h.Password(Configuration["RabbitMq:Password"]);
+                    });
+                    cfg.ReceiveEndpoint("giving-to-customer-promo-code-received", e =>
+                        e.ConfigureConsumer<PromoCodeReceivedConsumer>(context));
+                });
+            });
             services.AddDbContext<DataContext>(x =>
             {
                 //x.UseSqlite("Filename=PromocodeFactoryGivingToCustomerDb.sqlite");
