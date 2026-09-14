@@ -59,7 +59,7 @@ namespace Pcf.Administration.WebHost.Controllers
 
             var employeeModel = new EmployeeResponse()
             {
-                Id = employee.Id,
+                Id = employee.Role.Id,
                 Email = employee.Email,
                 Role = new RoleItemResponse()
                 {
